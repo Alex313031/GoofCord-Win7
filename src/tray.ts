@@ -46,7 +46,6 @@ export async function createTray() {
         },
         {
             label: "About",
-            accelerator: "CmdorCtrl+Alt+A",
             click() {
                 const info = [
                     appName + " v" + appVer,
