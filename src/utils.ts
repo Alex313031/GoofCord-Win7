@@ -1,3 +1,4 @@
+import * as Os from "os";
 import {app, dialog} from "electron";
 import path from "path";
 import {getConfig} from "./config";
@@ -119,3 +120,27 @@ export function checkForPortableFolder() {
         app.setPath("userData", dataPath);
     }
 }
+
+// Get version info
+export const appName = app.getName();
+export const appVer = app.getVersion();
+export const electronVer = process.versions.electron;
+export const chromeVer = process.versions.chrome;
+export const nodeVer = process.versions.node;
+export const v8Ver = process.versions.v8;
+// Globally export what OS we are on
+export const isLinux = process.platform === "linux";
+export const isWin = process.platform === "win32";
+export const isMac = process.platform === "darwin";
+let OSType: any;
+if (isLinux) {
+    OSType = "Linux";
+} else if (isWin) {
+    OSType = "Windows";
+} else if (isMac) {
+    OSType = "MacOS";
+} else {
+    OSType = "BSD";
+}
+export const currentOS = OSType;
+export const archType = Os.arch();

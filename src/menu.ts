@@ -1,8 +1,20 @@
-import * as Os from "os";
 import {app, BrowserWindow, clipboard, dialog, Menu, shell} from "electron";
 import {mainWindow} from "./window";
 import {createSettingsWindow} from "./settings/main";
 import {cycleThroughPasswords} from "./modules/messageEncryption";
+import {
+    appName,
+    appVer,
+    electronVer,
+    chromeVer,
+    nodeVer,
+    v8Ver,
+    isLinux,
+    isWin,
+    isMac,
+    currentOS,
+    archType
+} from "./utils";
 import contextMenu from "electron-context-menu";
 
 interface Pasteable {
@@ -23,28 +35,6 @@ export async function setMenu() {
 }
 
 export async function setApplicationMenu() {
-    // Get version info
-    const appName = app.getName();
-    const appVer = app.getVersion();
-    const electronVer = process.versions.electron;
-    const chromeVer = process.versions.chrome;
-    const nodeVer = process.versions.node;
-    const v8Ver = process.versions.v8;
-    // Globally export what OS we are on
-    const isLinux = process.platform === "linux";
-    const isWin = process.platform === "win32";
-    const isMac = process.platform === "darwin";
-    let currentOS: any;
-    if (isLinux) {
-        currentOS = "Linux";
-    } else if (isWin) {
-        currentOS = "Windows";
-    } else if (isMac) {
-        currentOS = "MacOS";
-    } else {
-        currentOS = "BSD";
-    }
-    const archType = Os.arch();
     const template: Electron.MenuItemConstructorOptions[] = [
         {
             label: "GoofCord",
