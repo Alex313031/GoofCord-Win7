@@ -45,7 +45,11 @@ export function getCustomIcon() {
     if (typeof customIconPath === "string" && customIconPath !== "") {
         return customIconPath;
     } else {
-        return path.join(__dirname, "/assets/gf_icon.png");
+        if (process.platform == "win32") {
+            return path.join(__dirname, "/assets/gf_icon.ico");
+        } else {
+            return path.join(__dirname, "/assets/gf_icon.png");
+        }
     }
 }
 
