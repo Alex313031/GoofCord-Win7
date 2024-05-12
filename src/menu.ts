@@ -1,4 +1,5 @@
-import {app, BrowserWindow, clipboard, Menu, shell} from "electron";
+import * as Os from "os";
+import {app, BrowserWindow, clipboard, dialog, Menu, shell} from "electron";
 import {mainWindow} from "./window";
 import {createSettingsWindow} from "./settings/main";
 import {cycleThroughPasswords} from "./modules/messageEncryption";
@@ -22,19 +23,33 @@ export async function setMenu() {
 }
 
 export async function setApplicationMenu() {
+    // Get version info
+    const appName = app.getName();
+    const appVer = app.getVersion();
+    const electronVer = process.versions.electron;
+    const chromeVer = process.versions.chrome;
+    const nodeVer = process.versions.node;
+    const v8Ver = process.versions.v8;
+    // Globally export what OS we are on
+    const isLinux = process.platform === "linux";
+    const isWin = process.platform === "win32";
+    const isMac = process.platform === "darwin";
+    let currentOS: any;
+    if (isLinux) {
+        currentOS = "Linux";
+    } else if (isWin) {
+        currentOS = "Windows";
+    } else if (isMac) {
+        currentOS = "MacOS";
+    } else {
+        currentOS = "BSD";
+    }
+    const archType = Os.arch();
     const template: Electron.MenuItemConstructorOptions[] = [
         {
             label: "GoofCord",
             submenu: [
-                {label: "About GoofCord", role: "about"}, //orderFrontStandardAboutPanel
-                {type: "separator"},
-                {
-                    label: "Developer tools",
-                    accelerator: "CmdOrCtrl+Shift+I",
-                    click: function () {
-                        BrowserWindow.getFocusedWindow()!.webContents.toggleDevTools();
-                    }
-                },
+                {label: "About GoofCord", role: "about", visible: isMac ? true : false}, //orderFrontStandardAboutPanel
                 {
                     label: "Open settings",
                     accelerator: "CmdOrCtrl+Shift+'",
@@ -57,11 +72,11 @@ export async function setApplicationMenu() {
                     }
                 },
                 {
-                    label: "Full reload",
-                    accelerator: "Shift+Ctrl+R",
+                    label: "Restart",
+                    accelerator: "CmdOrCtrl+Alt+R",
                     click: async function () {
                         app.relaunch();
-                        app.exit(0);
+                        app.exit();
                     }
                 },
                 {
@@ -78,31 +93,105 @@ export async function setApplicationMenu() {
             ]
         },
         {
-            label: "Edit",
+            role: "editMenu",
             submenu: [
-                {label: "Undo", accelerator: "CmdOrCtrl+Z", role: "undo"},
-                {label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", role: "redo"},
+                {role: "undo"},
+                {role: "redo"},
                 {type: "separator"},
-                {label: "Cut", accelerator: "CmdOrCtrl+X", role: "cut"},
-                {label: "Copy", accelerator: "CmdOrCtrl+C", role: "copy"},
+                {role: "cut"},
+                {role: "copy"},
                 {
                     label: "Paste",
+                    role: "paste",
                     accelerator: "CmdOrCtrl+V",
                     click() {
                         paste(mainWindow.webContents);
                     }
                 },
-                {label: "Select All", accelerator: "CmdOrCtrl+A", role: "selectAll"}
+                {role: "delete"},
+                {type: "separator"},
+                {role: "selectAll"}
+            ]
+        },
+        {role: "viewMenu"},
+        {role: "windowMenu"},
+        {
+            label: "Developer",
+            submenu: [
+                {
+                    label: "Reload F5",
+                    accelerator: "F5",
+                    click(item, focusedWindow) {
+                        if (focusedWindow) focusedWindow.reload();
+                    }
+                },
+                {
+                    label: "Open Electron DevTools",
+                    accelerator: isMac ? "Cmd+Shift+F12" : "F12",
+                    click(item, focusedWindow) {
+                        // @ts-expect-error
+                        BrowserWindow.getFocusedWindow().openDevTools({mode: "detach"});
+                    }
+                },
+                {type: "separator"},
+                {
+                    label: "Open chrome://gpu",
+                    click() {
+                        const gpuWindow = new BrowserWindow({
+                            width: 900,
+                            height: 700,
+                            useContentSize: true,
+                            title: "GPU Internals"
+                        });
+                        gpuWindow.loadURL("chrome://gpu");
+                    }
+                },
+                {
+                    label: "Open chrome://process-internals",
+                    click() {
+                        const procsWindow = new BrowserWindow({
+                            width: 900,
+                            height: 700,
+                            useContentSize: true,
+                            title: "Process Model Internals"
+                        });
+                        procsWindow.loadURL("chrome://process-internals");
+                    }
+                }
             ]
         },
         {
-            label: "Zoom",
+            role: "help",
+            label: "About",
             submenu: [
-                {label: "Zoom in", accelerator: "CmdOrCtrl+Plus", role: "zoomIn"},
-                // Fix for zoom in on keyboards with dedicated + like QWERTZ (or numpad)
-                // See https://github.com/electron/electron/issues/14742 and https://github.com/electron/electron/issues/5256
-                {label: "Zoom in", accelerator: "CmdOrCtrl+=", role: "zoomIn", visible: false},
-                {label: "Zoom out", accelerator: "CmdOrCtrl+-", role: "zoomOut"}
+                {label: appName + " v" + appVer, enabled: false},
+                {
+                    label: "File an Issue",
+                    click() {
+                        shell.openExternal("https://github.com/Alex313031/GoofCord-Win7/issues/new/choose");
+                    }
+                },
+                {
+                    label: "About",
+                    accelerator: "CmdorCtrl+Alt+A",
+                    click() {
+                        const info = [
+                            appName + " v" + appVer,
+                            "",
+                            "Electron : " + electronVer,
+                            "Chromium : " + chromeVer,
+                            "Node : " + nodeVer,
+                            "V8 : " + v8Ver,
+                            "OS : " + currentOS + " " + archType
+                        ];
+                        dialog.showMessageBox({
+                            type: "info",
+                            title: "About " + appName,
+                            message: info.join("\n"),
+                            buttons: ["Ok"]
+                        });
+                    }
+                }
             ]
         }
     ];
@@ -112,10 +201,38 @@ export async function setApplicationMenu() {
 
 export function setContextMenu() {
     contextMenu({
+        showSelectAll: true,
         showSaveImageAs: true,
+        showCopyImage: true,
         showCopyImageAddress: true,
+        showCopyLink: true,
+        showSaveLinkAs: true,
+        showInspectElement: true,
         showSearchWithGoogle: false,
         prepend: (_defaultActions, parameters) => [
+            {
+                label: 'Open Link in New Window',
+                // Only show it when right-clicking a link
+                visible: parameters.linkURL.trim().length > 0,
+                click: () => {
+                    const toURL = parameters.linkURL;
+                    const linkWin = new BrowserWindow({
+                        title: 'New Window',
+                        width: 1024,
+                        height: 700,
+                        useContentSize: true,
+                        darkTheme: true,
+                        webPreferences: {
+                            nodeIntegration: false,
+                            nodeIntegrationInWorker: false,
+                            experimentalFeatures: true,
+                            devTools: true
+                        }
+                    });
+                    linkWin.loadURL(toURL);
+                    console.log('Opened Link in New Window');
+                }
+            },
             {
                 label: "Search with Google",
                 // Only show it when right-clicking text

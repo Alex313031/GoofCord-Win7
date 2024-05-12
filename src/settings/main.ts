@@ -32,6 +32,7 @@ export async function createSettingsWindow() {
         autoHideMenuBar: true,
         webPreferences: {
             sandbox: false,
+            experimentalFeatures: true,
             preload: path.join(__dirname, "/settings/preload.js"),
             nodeIntegrationInSubFrames: false,
             webSecurity: true,

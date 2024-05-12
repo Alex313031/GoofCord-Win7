@@ -1,3 +1,6 @@
+.DS_Store
+.eslintcache
+Thumbs.db
 node_modules
 out/
 dist
@@ -6,3 +9,5 @@ ts-out
 yes.txt
 .idea
 /fix.bat
+/release/
+/electron/

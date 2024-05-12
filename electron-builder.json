@@ -1,0 +1,78 @@
+{
+  "electronVersion": "22.3.27",
+  "asar": true,
+  "productName": "GoofCord",
+  "appId": "com.alex313031.goofcord",
+  "generateUpdatesFilesForAllChannels": false,
+  "directories": {
+    "app": ".",
+    "buildResources": "build",
+    "output": "dist"
+  },
+  "files": [
+    "!*",
+    "!node_modules/**/*",
+    "ts-out",
+    "package.json",
+    "LICENSE.md"
+  ],
+  "extraFiles": [
+    {
+      "from": "assets/icon.png"
+    }
+  ],
+  "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+  "linux": {
+    "target": [ "zip", "deb", "rpm", "appimage" ],
+    "icon": "build/icons",
+    "maintainer": "Alex313031",
+    "vendor": "Alex313031",
+    "synopsis": "Take control of your Discord experience with GoofCord – the highly configurable and privacy-minded discord client. Legacy OS Builds.",
+    "category": "Network",
+    "executableName": "goofcord",
+    "artifactName": "goofcord_${version}_${arch}.${ext}",
+    "executableArgs": ["--ozone-platform-hint=auto"],
+    "desktop": {
+      "Name": "GoofCord",
+      "StartupWMClass": "goofcord",
+      "Keywords": "discord;arm;goof;",
+      "Icon": "goofcord"
+    }
+  },
+  "snap": {
+    "allowNativeWayland": true
+  },
+  "win": {
+    "target": [ "zip", "portable", "nsis" ],
+    "icon": "build/icon.ico",
+    "publisherName": "Alex313031",
+    "executableName": "GoofCord",
+    "artifactName": "GoofCord_${version}_${arch}.${ext}"
+  },
+  "nsis": {
+    "shortcutName": "GoofCord",
+    "artifactName": "GoofCord_setup_${version}_${arch}.${ext}",
+    "uninstallDisplayName": "GoofCord ${version}",
+    "license": "LICENSE.md",
+    "include": "build/installer.nsh",
+    "deleteAppDataOnUninstall": false,
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  },
+  "portable": {
+    "artifactName": "GoofCord_portable_${version}_${arch}.${ext}"
+  },
+  "mac": {
+    "category": "public.app-category.social-networking",
+    "target": [ "dmg", "zip" ],
+    "icon": "build/icon.icns",
+    "darkModeSupport": true,
+    "artifactName": "GoofCord_${version}_macos_${arch}.${ext}",
+    "extendInfo": {
+      "NSMicrophoneUsageDescription": "This app needs access to the microphone",
+      "NSCameraUsageDescription": "This app needs access to the camera",
+      "com.apple.security.device.audio-input": true,
+      "com.apple.security.device.camera": true
+    }
+  }
+}

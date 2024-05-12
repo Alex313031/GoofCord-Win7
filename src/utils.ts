@@ -2,6 +2,8 @@ import {app, dialog} from "electron";
 import path from "path";
 import {getConfig} from "./config";
 import fs from "fs";
+import fetch from 'node-fetch';
+globalThis.fetch = fetch;
 
 //Get the version value from the "package.json" file
 export const packageVersion = require("../package.json").version;
