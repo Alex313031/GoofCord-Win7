@@ -126,6 +126,7 @@ export async function setApplicationMenu() {
                 {type: "separator"},
                 {
                     label: "Open chrome://gpu",
+                    accelerator: "CmdorCtrl+Alt+G",
                     click() {
                         const gpuWindow = new BrowserWindow({
                             width: 900,
