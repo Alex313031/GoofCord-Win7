@@ -18,7 +18,7 @@
   ],
   "extraFiles": [
     {
-      "from": "assets/icon.png"
+      "from": "assets/logo.png"
     }
   ],
   "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
