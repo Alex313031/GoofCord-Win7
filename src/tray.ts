@@ -24,7 +24,7 @@ export async function createTray() {
 
     const contextMenu = Menu.buildFromTemplate([
         {
-            label: "GoofCord " + getDisplayVersion(),
+            label: "GoofCord",
             icon: getTrayMenuIcon(),
             enabled: false
         },
@@ -55,7 +55,7 @@ export async function createTray() {
     ]);
 
     tray.setContextMenu(contextMenu);
-    tray.setToolTip("GoofCord");
+    tray.setToolTip("GoofCord " + getDisplayVersion());
     tray.on("click", function () {
         mainWindow.show();
     });
