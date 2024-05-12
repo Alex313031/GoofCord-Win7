@@ -5,12 +5,16 @@ import {createSettingsWindow} from "./settings/main";
 
 export let tray: Tray;
 export async function createTray() {
+    const trayImage = nativeImage.createFromPath(getCustomIcon());
 
     // This is maybe unnecessary, but I can't test it so it stays
     const getTrayMenuIcon = () => {
-        let trayImage = nativeImage.createFromPath(getCustomIcon());
-        if (process.platform == "darwin") {
+        if (process.platform == "win32") {
+            return trayImage.resize({height: 16});
+        } else if (process.platform == "darwin") {
             return trayImage.resize({height: 22});
+        } else if (process.platform == "linux") {
+            return trayImage.resize({height: 20});
         } else {
             return trayImage;
         }
