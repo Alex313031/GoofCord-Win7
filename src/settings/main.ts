@@ -1,8 +1,9 @@
 import {app, BrowserWindow, ipcMain, shell} from "electron";
-import {getCustomIcon, getDisplayVersion} from "../utils";
+import {getCustomIcon, getDisplayVersion, checkForPortableFolder} from "../utils";
 import path from "path";
 
 let settingsWindow: BrowserWindow;
+checkForPortableFolder();
 const userDataPath = app.getPath("userData");
 let isOpen = false;
 

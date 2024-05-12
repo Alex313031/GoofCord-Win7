@@ -2,7 +2,7 @@ import {app, crashReporter, net, session} from "electron";
 import "v8-compile-cache";
 import AutoLaunch from "auto-launch";
 import {getConfig, loadConfig} from "./config";
-import {isDev} from "./utils";
+import {isDev, checkForPortableFolder} from "./utils";
 import {createTray} from "./tray";
 import {setMenu} from "./menu";
 
@@ -24,6 +24,8 @@ loadConfig().then(async () => {
     if (getConfig("autoscroll")) app.commandLine.appendSwitch("enable-blink-features", "MiddleClickAutoscroll");
     setAutoLaunchState();
     setMenu();
+
+    checkForPortableFolder();
 
     await app.whenReady();
 

@@ -5,7 +5,7 @@ import fs from "fs";
 import fetch from 'node-fetch';
 globalThis.fetch = fetch;
 
-//Get the version value from the "package.json" file
+// Get the version value from the "package.json" file
 export const packageVersion = require("../package.json").version;
 
 export function addStyle(styleString: string) {
@@ -96,5 +96,13 @@ export async function readOrCreateFolder(path: string) {
     } catch (e) {
         await fs.promises.mkdir(path, { recursive: true });
         return [];
+    }
+}
+
+export function checkForPortableFolder() {
+    const dataPath = path.join(path.dirname(app.getPath("exe")), "goofcord-data");
+    if (fs.existsSync(dataPath) && fs.statSync(dataPath).isDirectory()) {
+        console.log("Found goofcord-data folder. Running in portable mode.");
+        app.setPath("userData", dataPath);
     }
 }
