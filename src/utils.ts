@@ -44,12 +44,21 @@ export function getCustomIcon() {
     const customIconPath = getConfig("customIconPath");
     if (typeof customIconPath === "string" && customIconPath !== "") {
         return customIconPath;
+    } else if (process.platform == "win32") {
+        return path.join(__dirname, "/assets/gf_icon.ico");
     } else {
-        if (process.platform == "win32") {
-            return path.join(__dirname, "/assets/gf_icon.ico");
-        } else {
-            return path.join(__dirname, "/assets/gf_icon.png");
-        }
+        return path.join(__dirname, "/assets/gf_icon.png");
+    }
+}
+
+export function getTrayIcon() {
+    const customIconPath = getConfig("customIconPath");
+    if (typeof customIconPath === "string" && customIconPath !== "") {
+        return customIconPath;
+    } else if (process.platform == "win32") {
+        return path.join(__dirname, "/assets/tray_icon.ico");
+    } else {
+        return path.join(__dirname, "/assets/tray_icon.png");
     }
 }
 

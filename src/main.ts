@@ -43,6 +43,9 @@ async function checkForConnectivity() {
 }
 
 async function setAutoLaunchState() {
+    if (isDev()) {
+        console.log("Running in Dev mode");
+    }
     console.log("Process execution path: " + process.execPath);
     let gfAutoLaunch;
     // When GoofCord is installed from AUR it uses system Electron, which causes it to launch instead of GoofCord

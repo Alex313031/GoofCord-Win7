@@ -18,9 +18,10 @@
   "homepage": "https://github.com/Alex313031/GoofCord-Win7#readme",
   "scripts": {
     "build": "node build.mjs",
-    "start": "npm run build --dev && electron ./ts-out/main.js --dev",
-    "startWayland": "npm run build --dev && electron ./ts-out/main.js --ozone-platform-hint=auto --enable-features=WebRTCPipeWireCapturer,WaylandWindowDecorations --disable-gpu --dev",
-    "startWithLoginFix": "npm run fixLogin && npm run build --dev && electron ./ts-out/main.js --dev",
+    "buildDev": "node build-dev.mjs",
+    "start": "npm run buildDev && electron . --dev",
+    "startWayland": "npm run buildDev && electron . --ozone-platform-hint=auto --enable-features=WebRTCPipeWireCapturer,WaylandWindowDecorations --disable-gpu --dev",
+    "startWithLoginFix": "npm run fixLogin && npm run buildDev && electron --dev",
     "distDir": "npm run build && electron-builder --dir",
     "distLinux": "npm run build && electron-builder -l --x64 && electron-builder -l --arm64",
     "distWin": "npm run build && electron-builder -w --x64 && electron-builder -w --ia32",

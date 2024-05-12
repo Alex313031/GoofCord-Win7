@@ -5,8 +5,6 @@ import {getCustomIcon, tryWithFix} from "./utils";
 
 export let cachedConfig: object = {};
 
-const welcomeImage = nativeImage.createFromPath(getCustomIcon());
-
 export async function loadConfig() {
     await tryWithFix(async () => {
         const rawData = await fs.promises.readFile(getConfigLocation(), "utf-8");
@@ -79,7 +77,7 @@ export async function setup() {
         dialog.showMessageBox({
             message: "Welcome to GoofCord!\nIt seems that this is the first launch of GoofCord. It is advisable to fully restart GoofCord so it can fully set itself up.\nYou can do this with Ctrl+Shift+R or through the tray menu.\nHappy chatting!",
             type: "info",
-            icon: welcomeImage,
+            icon: getCustomIcon(),
             noLink: false
         });
     }, 3000);

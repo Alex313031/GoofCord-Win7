@@ -1,11 +1,11 @@
 import {app, Menu, nativeImage, Tray} from "electron";
 import {mainWindow} from "./window";
-import {getCustomIcon, getDisplayVersion} from "./utils";
+import {getTrayIcon, getDisplayVersion} from "./utils";
 import {createSettingsWindow} from "./settings/main";
 
 export let tray: Tray;
 export async function createTray() {
-    const trayImage = nativeImage.createFromPath(getCustomIcon());
+    const trayImage = nativeImage.createFromPath(getTrayIcon());
 
     // This is maybe unnecessary, but I can't test it so it stays
     const getTrayMenuIcon = () => {
