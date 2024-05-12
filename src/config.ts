@@ -1,7 +1,7 @@
 import {app, dialog, nativeImage, ipcRenderer} from "electron";
 import path from "path";
 import * as fs from "fs";
-import {getCustomIcon, tryWithFix} from "./utils";
+import {getTrayIcon, tryWithFix} from "./utils";
 
 export let cachedConfig: object = {};
 
@@ -77,7 +77,7 @@ export async function setup() {
         dialog.showMessageBox({
             message: "Welcome to GoofCord!\nIt seems that this is the first launch of GoofCord. It is advisable to fully restart GoofCord so it can fully set itself up.\nYou can do this with Ctrl+Shift+R or through the tray menu.\nHappy chatting!",
             type: "info",
-            icon: getCustomIcon(),
+            icon: getTrayIcon(),
             noLink: false
         });
     }, 3000);
