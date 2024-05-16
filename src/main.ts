@@ -71,6 +71,7 @@ async function setPermissions() {
 
 async function setFlags() {
     app.commandLine.appendSwitch('ignore-gpu-blocklist');
+    app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
     app.commandLine.appendSwitch("disable-features", "" +
         "OutOfBlinkCors," +
         "UseChromeOSDirectVideoDecoder," +
@@ -82,7 +83,6 @@ async function setFlags() {
         "Vulkan"
     );
     app.commandLine.appendSwitch("enable-features", "WebRTC,WebRtcHideLocalIpsWithMdns,PlatformHEVCEncoderSupport,EnableDrDc,CanvasOopRasterization,UseSkiaRenderer");
-    app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
     if (process.platform === "linux") {
         app.commandLine.appendSwitch("enable-features", "PulseaudioLoopbackForScreenShare,VaapiVideoDecodeLinuxGL,VaapiVideoDecoder,VaapiVideoEncoder");
         if (process.env.XDG_SESSION_TYPE?.toLowerCase() === "wayland") {
