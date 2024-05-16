@@ -2,7 +2,7 @@ import {app, crashReporter, net, session} from "electron";
 import "v8-compile-cache";
 import AutoLaunch from "auto-launch";
 import {getConfig, loadConfig} from "./config";
-import {isDev} from "./utils";
+import {isDev, checkForPortableFolder} from "./utils";
 import {createTray} from "./tray";
 import {setMenu} from "./menu";
 
@@ -25,6 +25,8 @@ loadConfig().then(async () => {
     setAutoLaunchState();
     setMenu();
 
+    checkForPortableFolder();
+
     await app.whenReady();
 
     createTray();
@@ -41,6 +43,9 @@ async function checkForConnectivity() {
 }
 
 async function setAutoLaunchState() {
+    if (isDev()) {
+        console.log("Running in Dev mode");
+    }
     console.log("Process execution path: " + process.execPath);
     let gfAutoLaunch;
     // When GoofCord is installed from AUR it uses system Electron, which causes it to launch instead of GoofCord
@@ -65,7 +70,7 @@ async function setPermissions() {
 }
 
 async function setFlags() {
-    app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
+    app.commandLine.appendSwitch('ignore-gpu-blocklist');
     app.commandLine.appendSwitch("disable-features", "" +
         "OutOfBlinkCors," +
         "UseChromeOSDirectVideoDecoder," +
@@ -77,8 +82,9 @@ async function setFlags() {
         "Vulkan"
     );
     app.commandLine.appendSwitch("enable-features", "WebRTC,WebRtcHideLocalIpsWithMdns,PlatformHEVCEncoderSupport,EnableDrDc,CanvasOopRasterization,UseSkiaRenderer");
+    app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
     if (process.platform === "linux") {
-        app.commandLine.appendSwitch("enable-features", "PulseaudioLoopbackForScreenShare,VaapiVideoDecoder,VaapiVideoEncoder,VaapiVideoDecodeLinuxGL");
+        app.commandLine.appendSwitch("enable-features", "PulseaudioLoopbackForScreenShare,VaapiVideoDecodeLinuxGL,VaapiVideoDecoder,VaapiVideoEncoder");
         if (process.env.XDG_SESSION_TYPE?.toLowerCase() === "wayland") {
             app.commandLine.appendSwitch("enable-features", "WebRTCPipeWireCapturer");
             console.log("Wayland detected, using PipeWire for video capture.");

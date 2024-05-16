@@ -24,6 +24,7 @@ export async function registerCustomHandler() {
             autoHideMenuBar: true,
             webPreferences: {
                 sandbox: false,
+                experimentalFeatures: true,
                 preload: path.join(__dirname, "/screenshare/preload.js")
             }
         });

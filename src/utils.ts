@@ -1,9 +1,12 @@
+import * as Os from "os";
 import {app, dialog} from "electron";
 import path from "path";
 import {getConfig} from "./config";
 import fs from "fs";
+import fetch from 'node-fetch';
+globalThis.fetch = fetch;
 
-//Get the version value from the "package.json" file
+// Get the version value from the "package.json" file
 export const packageVersion = require("../package.json").version;
 
 export function addStyle(styleString: string) {
@@ -46,6 +49,17 @@ export function getCustomIcon() {
         return path.join(__dirname, "/assets/gf_icon.ico");
     } else {
         return path.join(__dirname, "/assets/gf_icon.png");
+    }
+}
+
+export function getTrayIcon() {
+    const customIconPath = getConfig("customIconPath");
+    if (typeof customIconPath === "string" && customIconPath !== "") {
+        return customIconPath;
+    } else if (process.platform == "win32") {
+        return path.join(__dirname, "/assets/tray_icon.ico");
+    } else {
+        return path.join(__dirname, "/assets/tray_icon.png");
     }
 }
 
@@ -98,3 +112,35 @@ export async function readOrCreateFolder(path: string) {
         return [];
     }
 }
+
+export function checkForPortableFolder() {
+    const dataPath = path.join(path.dirname(app.getPath("exe")), "goofcord-data");
+    if (fs.existsSync(dataPath) && fs.statSync(dataPath).isDirectory()) {
+        console.log("Found goofcord-data folder. Running in portable mode.");
+        app.setPath("userData", dataPath);
+    }
+}
+
+// Get version info
+export const appName = app.getName();
+export const appVer = app.getVersion();
+export const electronVer = process.versions.electron;
+export const chromeVer = process.versions.chrome;
+export const nodeVer = process.versions.node;
+export const v8Ver = process.versions.v8;
+// Globally export what OS we are on
+export const isLinux = process.platform === "linux";
+export const isWin = process.platform === "win32";
+export const isMac = process.platform === "darwin";
+let OSType: any;
+if (isLinux) {
+    OSType = "Linux";
+} else if (isWin) {
+    OSType = "Windows";
+} else if (isMac) {
+    OSType = "MacOS";
+} else {
+    OSType = "BSD";
+}
+export const currentOS = OSType;
+export const archType = Os.arch();

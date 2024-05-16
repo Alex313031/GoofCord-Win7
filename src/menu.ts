@@ -1,7 +1,20 @@
-import {app, BrowserWindow, clipboard, Menu, shell} from "electron";
+import {app, BrowserWindow, clipboard, dialog, Menu, shell} from "electron";
 import {mainWindow} from "./window";
 import {createSettingsWindow} from "./settings/main";
 import {cycleThroughPasswords} from "./modules/messageEncryption";
+import {
+    appName,
+    appVer,
+    electronVer,
+    chromeVer,
+    nodeVer,
+    v8Ver,
+    isLinux,
+    isWin,
+    isMac,
+    currentOS,
+    archType
+} from "./utils";
 import contextMenu from "electron-context-menu";
 
 interface Pasteable {
@@ -22,19 +35,12 @@ export async function setMenu() {
 }
 
 export async function setApplicationMenu() {
+    const userDataDir = app.getPath('userData');
     const template: Electron.MenuItemConstructorOptions[] = [
         {
             label: "GoofCord",
             submenu: [
-                {label: "About GoofCord", role: "about"},
-                {type: "separator"},
-                {
-                    label: "Developer tools",
-                    accelerator: "CmdOrCtrl+Shift+I",
-                    click: function () {
-                        BrowserWindow.getFocusedWindow()!.webContents.toggleDevTools();
-                    }
-                },
+                {label: "About GoofCord", role: "about", visible: isMac ? true : false},
                 {
                     label: "Open settings",
                     accelerator: "CmdOrCtrl+Shift+'",
@@ -57,8 +63,8 @@ export async function setApplicationMenu() {
                     }
                 },
                 {
-                    label: "Full reload",
-                    accelerator: "Shift+CmdOrCtrl+R",
+                    label: "Restart",
+                    accelerator: "CmdOrCtrl+Alt+R",
                     click: async function () {
                         app.relaunch();
                         app.quit();
@@ -78,36 +84,55 @@ export async function setApplicationMenu() {
             ]
         },
         {
-            label: "Edit",
+            role: "editMenu",
             submenu: [
-                {label: "Undo", accelerator: "CmdOrCtrl+Z", role: "undo"},
-                {label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", role: "redo"},
+                {role: "undo"},
+                {role: "redo"},
                 {type: "separator"},
-                {label: "Cut", accelerator: "CmdOrCtrl+X", role: "cut"},
-                {label: "Copy", accelerator: "CmdOrCtrl+C", role: "copy"},
+                {role: "cut"},
+                {role: "copy"},
                 {
                     label: "Paste",
+                    role: "paste",
                     accelerator: "CmdOrCtrl+V",
                     click() {
                         paste(mainWindow.webContents);
                     }
                 },
-                {label: "Select All", accelerator: "CmdOrCtrl+A", role: "selectAll"}
+                {role: "delete"},
+                {type: "separator"},
+                {role: "selectAll"}
             ]
         },
-        {
-            label: "Zoom",
-            submenu: [
-                {label: "Zoom in", accelerator: "CmdOrCtrl+Plus", role: "zoomIn"},
-                // Fix for zoom in on keyboards with dedicated + like QWERTZ (or numpad)
-                // See https://github.com/electron/electron/issues/14742 and https://github.com/electron/electron/issues/5256
-                {label: "Zoom in", accelerator: "CmdOrCtrl+=", role: "zoomIn", visible: false},
-                {label: "Zoom out", accelerator: "CmdOrCtrl+-", role: "zoomOut"}
-            ]
-        },
+        {role: "viewMenu"},
+        {role: "windowMenu"},
         {
             label: "Developer",
             submenu: [
+                {
+                    label: "Reload F5",
+                    accelerator: "F5",
+                    visible: false,
+                    acceleratorWorksWhenHidden: true,
+                    click(item, focusedWindow) {
+                        if (focusedWindow) focusedWindow.reload();
+                    }
+                },
+                {
+                    label: 'Open User Data Dir',
+                    click() {
+                        shell.openPath(userDataDir);
+                    }
+                },
+                {
+                    label: "Open Electron DevTools",
+                    accelerator: isMac ? "Cmd+Shift+F12" : "F12",
+                    click(item, focusedWindow) {
+                        // @ts-expect-error
+                        BrowserWindow.getFocusedWindow().openDevTools({mode: "detach"});
+                    }
+                },
+                {type: "separator"},
                 {
                     label: "Open chrome://gpu",
                     accelerator: "CmdorCtrl+Alt+G",
@@ -120,9 +145,55 @@ export async function setApplicationMenu() {
                         });
                         gpuWindow.loadURL("chrome://gpu");
                     }
+                },
+                {
+                    label: "Open chrome://process-internals",
+                    click() {
+                        const procsWindow = new BrowserWindow({
+                            width: 900,
+                            height: 700,
+                            useContentSize: true,
+                            title: "Process Model Internals"
+                        });
+                        procsWindow.loadURL("chrome://process-internals");
+                    }
                 }
             ]
         },
+        {
+            role: "help",
+            label: "About",
+            submenu: [
+                {label: appName + " v" + appVer, enabled: false},
+                {
+                    label: "File an Issue",
+                    click() {
+                        shell.openExternal("https://github.com/Alex313031/GoofCord-Win7/issues/new/choose");
+                    }
+                },
+                {
+                    label: "About",
+                    accelerator: "CmdorCtrl+Alt+A",
+                    click() {
+                        const info = [
+                            appName + " v" + appVer,
+                            "",
+                            "Electron : " + electronVer,
+                            "Chromium : " + chromeVer,
+                            "Node : " + nodeVer,
+                            "V8 : " + v8Ver,
+                            "OS : " + currentOS + " " + archType
+                        ];
+                        dialog.showMessageBox({
+                            type: "info",
+                            title: "About " + appName,
+                            message: info.join("\n"),
+                            buttons: ["Ok"]
+                        });
+                    }
+                }
+            ]
+        }
     ];
 
     Menu.setApplicationMenu(Menu.buildFromTemplate(template));
@@ -138,6 +209,31 @@ export function setContextMenu() {
         showSaveLinkAs: true,
         showInspectElement: true,
         showSearchWithGoogle: true,
-        showSearchWithDuckDuckGo: true
+        showSearchWithDuckDuckGo: true,
+        prepend: (_defaultActions, parameters) => [
+            {
+                label: 'Open Link in New Window',
+                // Only show it when right-clicking a link
+                visible: parameters.linkURL.trim().length > 0,
+                click: () => {
+                    const toURL = parameters.linkURL;
+                    const linkWin = new BrowserWindow({
+                        title: 'New Window',
+                        width: 1024,
+                        height: 700,
+                        useContentSize: true,
+                        darkTheme: true,
+                        webPreferences: {
+                            nodeIntegration: false,
+                            nodeIntegrationInWorker: false,
+                            experimentalFeatures: true,
+                            devTools: true
+                        }
+                    });
+                    linkWin.loadURL(toURL);
+                    console.log('Opened Link in New Window');
+                }
+            }
+        ]
     });
 }

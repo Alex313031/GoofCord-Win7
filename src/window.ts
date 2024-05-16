@@ -1,5 +1,5 @@
 import {app, BrowserWindow, shell} from "electron";
-import {getCustomIcon} from "./utils";
+import {getCustomIcon, isLinux} from "./utils";
 import {getUserAgent} from "./modules/agent";
 import * as path from "path";
 import {initializeFirewall} from "./modules/firewall";
@@ -18,22 +18,21 @@ export async function createMainWindow() {
         show: !getConfig("startMinimized"),
         darkTheme: true,
         icon: getCustomIcon(),
-        frame: !getConfig("customTitlebar"),
-        autoHideMenuBar: true,
+        frame: isLinux? true : !getConfig("customTitlebar"),
+        autoHideMenuBar: isLinux? false : getConfig("customTitlebar"),
         backgroundColor: transparency ? "#00000000" : "#313338",
         transparent: transparency,
         backgroundMaterial: transparency ? "acrylic" : "none",
         webPreferences: {
             sandbox: false,
+            experimentalFeatures: true,
             preload: path.join(__dirname, "preload/preload.js"),
             nodeIntegrationInSubFrames: false,
             enableWebSQL: false,
             plugins: true,
-            spellcheck: getConfig("spellcheck"),
+            spellcheck: getConfig("spellcheck")
         }
     });
-
-    mainWindow.maximize();
     await doAfterDefiningTheWindow();
 }
 
@@ -77,7 +76,8 @@ async function setWindowOpenHandler() {
                     backgroundColor: "#313338",
                     alwaysOnTop: true,
                     webPreferences: {
-                        sandbox: true
+                        sandbox: true,
+                        experimentalFeatures: true
                     }
                 }
             };

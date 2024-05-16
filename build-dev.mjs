@@ -6,9 +6,9 @@ import * as readline from "readline";
 await fs.promises.rm("ts-out", { recursive: true, force: true });
 
 const NodeCommonOpts = {
-    minify: true,
+    minify: false,
     bundle: true,
-    sourcemap: "external",
+    sourcemap: "linked",
     logLevel: "info",
     format: "cjs",
     platform: "node",
@@ -22,7 +22,7 @@ const ctx = await context(NodeCommonOpts)
 await ctx.rebuild()
 await ctx.dispose()
 
-deleteSourceMaps("./ts-out");
+// deleteSourceMaps("./ts-out");
 
 await fs.promises.cp('./assets/', './ts-out/assets', {recursive: true});
 

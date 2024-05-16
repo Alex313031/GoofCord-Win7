@@ -1,8 +1,9 @@
 import {app, BrowserWindow, ipcMain, shell} from "electron";
-import {getCustomIcon, getDisplayVersion} from "../utils";
+import {getCustomIcon, getDisplayVersion, checkForPortableFolder} from "../utils";
 import path from "path";
 
 let settingsWindow: BrowserWindow;
+checkForPortableFolder();
 const userDataPath = app.getPath("userData");
 let isOpen = false;
 
@@ -32,6 +33,7 @@ export async function createSettingsWindow() {
         autoHideMenuBar: true,
         webPreferences: {
             sandbox: false,
+            experimentalFeatures: true,
             preload: path.join(__dirname, "/settings/preload.js"),
             nodeIntegrationInSubFrames: false,
             webSecurity: true,

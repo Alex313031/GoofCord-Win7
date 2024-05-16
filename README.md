@@ -1,9 +1,10 @@
 <div align="center">
-<img src="assetsDev/gf_logo_full.png" width="520" alt="GoofCord logo">
+<img src="assetsDev/gf_logo_full.png" width="512" alt="GoofCord logo">
 <h2>Take control of your Discord experience with GoofCord – the highly configurable and privacy-focused Discord client.<br>Based on <a href="https://github.com/ArmCord/ArmCord">ArmCord</a>.</h2>
+<br>Windows 7/8/8.1 Builds!
 <img src="https://img.shields.io/github/downloads/Milkshiift/GoofCord/total">
-<img src="https://img.shields.io/github/license/Milkshiift/GoofCord"><br>
-<img src="assetsDev/screenshot1_rounded.png" width="520" alt="Screenshot of GoofCord">
+<img src="https://img.shields.io/github/license/Milkshiift/GoofCord">
+<br><img src="assetsDev/screenshot1_rounded.png" width="512" alt="Screenshot of GoofCord">
 </div>
 
 ## Features :sparkles:
@@ -22,7 +23,7 @@
 * Install with prebuilt binaries from the [releases](https://github.com/Milkshiift/GoofCord/releases/latest) page.    
 Choose `GoofCord-Setup-<YOUR ARCHITECTURE>.exe` for an installer, or    
 `GoofCord-<VERSION>-win-<YOUR ARCHITECTURE>.zip` to manually unpack into a directory of your choice.
-* For Windows 7/8 you can use [this](https://github.com/Alex313031/GoofCord-Win7) fork. 
+* For Windows 10/11 you can use [upstream](https://github.com/Milkshiift/GoofCord) GoofCord. 
 
 ### Linux 🐧
 
