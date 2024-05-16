@@ -84,7 +84,7 @@ async function setFlags() {
     );
     app.commandLine.appendSwitch("enable-features", "WebRTC,WebRtcHideLocalIpsWithMdns,PlatformHEVCEncoderSupport,EnableDrDc,CanvasOopRasterization,UseSkiaRenderer");
     if (process.platform === "linux") {
-        app.commandLine.appendSwitch("enable-features", "PulseaudioLoopbackForScreenShare,VaapiVideoDecodeLinuxGL,VaapiVideoDecoder,VaapiVideoEncoder");
+        app.commandLine.appendSwitch("enable-features", "PulseaudioLoopbackForScreenShare,VaapiVideoDecoder,VaapiVideoEncoder,VaapiVideoDecodeLinuxGL");
         if (process.env.XDG_SESSION_TYPE?.toLowerCase() === "wayland") {
             app.commandLine.appendSwitch("enable-features", "WebRTCPipeWireCapturer");
             console.log("Wayland detected, using PipeWire for video capture.");
