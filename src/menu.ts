@@ -56,14 +56,7 @@ export async function setApplicationMenu() {
                     }
                 },
                 {
-                    label: "Reload",
-                    accelerator: "CmdOrCtrl+R",
-                    click: async function () {
-                        mainWindow.reload();
-                    }
-                },
-                {
-                    label: "Restart",
+                    label: "Relaunch",
                     accelerator: "CmdOrCtrl+Alt+R",
                     click: async function () {
                         app.relaunch();
